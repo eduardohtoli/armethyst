@@ -116,12 +116,15 @@ int BasicCPU::ID()
 			return decodeDataProcImm();
 			break;
 		// case TODO
+		
+		//**** REO P03 
 		// x101 Data Processing -- Register on page C4-278
-		case 0xD000000:
-		case 0x5000000:
-			fpOP = false;
+		case 0x0A000000: //0000 1010 0000....
+		case 0x1A000000: //0001 1010 0000....
 			return decodeDataProcReg();
 			break;
+		
+		
 		default:
 			return 1; // instrução não implementada
 	}
@@ -226,35 +229,58 @@ int BasicCPU::decodeLoadStore() {
  *		   1: se a instrução não estiver implementada.
  */
 int BasicCPU::decodeDataProcReg() {
-	// TODO
-	//		acrescentar um switch no estilo do switch de decodeDataProcImm,
-	//		e implementar APENAS PARA A INSTRUÇÃO A SEGUIR:
-	//				'add w1, w1, w0'
-	//		que aparece na linha 43 de isummation.S e no endereço 0x68
-	//		de txt_isummation.o.txt.
-	unsigned int n, d;
-	int imm6;
-	switch (IR & 0x7F200000)
+	
+	//IMPLEMENTAR O REO P03 AQUI
+	
+	unsigned int n, m, imm6, shift;
+	
+	
+	//REO P03 
+	// aqui entra a mascara para add (shifted register) que sera 0xFF200000 (1111 1111 0010 0000 ....)
+	switch (IR & 0xFF200000) // mascara 
 	{
-		case 0x0B000000:
+		
+		//Case 1 = 0x8B000000 para sf=1 (64bit) 
+		//case 2 = 0x0B000000 para sf=0 (32bit)
+		
+		case 0x8B000000:  //1000 1011 0000...
+		case 0x0B000000:  //0000 1011 0000...
+		
+			// add (shifted register) - 32-bit 
+			
+			if (IR & 0x80000000) return 1; // sf = 1 não implementado (64bit)
 			
 			// ler A e B
-			n = (IR & 0x000003E0) >> 4;
-			if (n == 31) {
-				A = SP;
-			} else {
-				A = getX(n); // 64-bit variant
-			}
-			imm6 = (IR & 0x0000FC00) >> 10;
-			B = imm6;
+			n = (IR & 0x000003E0) >> 5; //Lê Rn e desloca 5>
+			A = getW(n);
 			
-			// registrador destino
-			d = (IR & 0x0000000F) >> 15;
-			if (d == 31) {
-				Rd = &SP;
-			} else {
-				Rd = &(R[d]);
+			m = (IR & 0x001F0000) >> 16; //Lê Rm e desloca 16> 
+			int auxB;
+			auxB = getW(m);
+			
+			imm6 = (IR & 0x0000FC00) >> 10;
+			shift = (IR & 0x00C00000) >> 22;
+			
+		
+			
+			switch (shift){
+				//B será deslocado o valor do imediato
+				case 0: //Caso 00 LSL (sofre o deslocamento do imediato para esquerda)
+				B = auxB << imm6;
+				break;
+				
+				case 1: //Caso 01 LSR (sofre o deslocamento do imediato para direita)
+				B = auxB >> imm6;
+				break;
+					
+				case 2: //Caso 10 ASR (sofre o deslocamento aritmetico mantendo o sinal para direita)
+				B = ((signed long)auxB) >> imm6;
+				break;
+				
+				default:
+					return 1;
 			}
+			
 			
 			// atribuir ALUctrl
 			ALUctrl = ALUctrlFlag::ADD;
@@ -269,13 +295,11 @@ int BasicCPU::decodeDataProcReg() {
 			MemtoReg = false;
 			
 			return 0;
-		default:
-			// instrução não implementada
-			return 1;
 	}
 	
 	// instrução não implementada
 	return 1;
+	//*************************************************************************************************
 }
 
 /**
@@ -319,6 +343,11 @@ int BasicCPU::EXI()
 			ALUout = A - B;
 			// ATIVIDADE FUTURA: setar flags NCZF
 			return 0;
+			
+		case ALUctrlFlag::ADD:
+			ALUout = A + B;
+			return 0;
+			
 		default:
 			// Controle não implementado
 			return 1;
