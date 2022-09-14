@@ -1,4 +1,4 @@
-﻿/* ----------------------------------------------------------------------------
+﻿﻿/* ----------------------------------------------------------------------------
 
     (EN) armethyst - A simple ARM Simulator written in C++ for Computer Architecture
     teaching purposes. Free software licensed under the MIT License (see license
@@ -29,7 +29,7 @@
     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
-	
+
    ----------------------------------------------------------------------------
 */
 
@@ -1088,19 +1088,3 @@ void test(bool fpOp,
 	cout << "End '" << instruction << "'." << endl << endl << endl;
 	
 }
-
-Footer
-© 2022 GitHub, Inc.
-Footer navigation
-Terms
-Privacy
-Security
-Status
-Docs
-Contact GitHub
-Pricing
-API
-Training
-Blog
-About
-You have no unread notifications
