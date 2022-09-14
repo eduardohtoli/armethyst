@@ -1,32 +1,4 @@
-﻿Skip to content
-Search or jump to…
-Pull requests
-Issues
-Marketplace
-Explore
- 
-@eduardohtoli 
-amlsmm
-/
-armethyst
-Public
-forked from andresaude/armethyst
-Code
-Pull requests
-Actions
-Projects
-Security
-Insights
-armethyst/fortnight05/runtest.cpp
-@andresaude
-andresaude Reorganizacao dos testes.
-Latest commit ff9ae55 on 22 Apr
- History
- 2 contributors
-@andresaude@saudemitah
-1091 lines (896 sloc)  26.9 KB
-
-/* ----------------------------------------------------------------------------
+﻿/* ----------------------------------------------------------------------------
     (EN) armethyst - A simple ARM Simulator written in C++ for Computer Architecture
     teaching purposes. Free software licensed under the MIT License (see license
     below).
